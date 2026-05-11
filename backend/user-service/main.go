@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"net/http"
+
+	"user-service/cmd/api"
+)
 
 func main() {
-	fmt.Println("User Service is running...")
+	router := api.NewRouter()
+
+	log.Println("User Service running on :8080")
+	http.ListenAndServe(":8080", router)
 }
