@@ -25,4 +25,5 @@ func main() {
 
 	log.Println("Auth Service running on :8081")
 	http.ListenAndServe(":8081", router)
+	_ = db
 }
