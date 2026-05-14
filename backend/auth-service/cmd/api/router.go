@@ -23,17 +23,13 @@ func NewRouter() http.Handler {
 	//auth routes
 	r.Route("/auth", func(r chi.Router) {
 		r.Post("/register", handlers.Register)
-		r.Post("/login", handleLogin)
+		r.Post("/login", handlers.Login)
 		r.Post("/refresh", handleRefresh)
 		r.Post("/logout", handleLogout)
 
 	})
 
 	return r
-}
-
-func handleLogin(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login endpoint"))
 }
 
 func handleRefresh(w http.ResponseWriter, r *http.Request) {
