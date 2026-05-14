@@ -1,6 +1,7 @@
 package api
 
 import (
+	"auth-service/cmd/api/handlers"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -21,17 +22,14 @@ func NewRouter() http.Handler {
 
 	//auth routes
 	r.Route("/auth", func(r chi.Router) {
-		r.Post("/register", handleRegister)
+		r.Post("/register", handlers.Register)
 		r.Post("/login", handleLogin)
 		r.Post("/refresh", handleRefresh)
 		r.Post("/logout", handleLogout)
+
 	})
 
 	return r
-}
-
-func handleRegister(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("register endpoint"))
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {

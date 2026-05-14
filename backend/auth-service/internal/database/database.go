@@ -28,3 +28,13 @@ func Connect(host, port, user, password, dbname string) (*DB, error) {
 
 	return &DB{Conn: db}, nil
 }
+
+var dbInstance *DB
+
+func Set(db *DB) {
+	dbInstance = db
+}
+
+func Get() *DB {
+	return dbInstance
+}

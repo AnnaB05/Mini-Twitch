@@ -20,6 +20,8 @@ func main() {
 		log.Fatal("Database connection failed:", err)
 	}
 
+	database.Set(db)
+
 	log.Println("Connected to PostgreSQL")
 	router := api.NewRouter()
 
