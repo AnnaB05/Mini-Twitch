@@ -20,6 +20,7 @@ type LoginResponse struct {
 	Token string `json:"token"`
 }
 
+// user login handler
 func Login(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 
@@ -38,43 +39,34 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	db := database.Get()
 
-	//look up user
+	// look up user (ID + hash in one query)
+	var userID int
 	var storedHash string
+
 	err := db.Conn.QueryRow(
-		"SELECT password_hash FROM users WHERE email = $1",
+		"SELECT id, password_hash FROM users WHERE email = $1",
 		req.Email,
-	).Scan(&storedHash)
+	).Scan(&userID, &storedHash)
 
 	if err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
 
-	//compare password with bcrypt
+	// compare password with bcrypt
 	if err := bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(req.Password)); err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
 
-	//generates JWT
-	var userID int
-	err = db.Conn.QueryRow(
-		"SELECT id FROM users WHERE email = $1",
-		req.Email,
-	).Scan(&userID)
-
-	if err != nil {
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-		return
-	}
-
+	// generate JWT
 	token, err := jwt.Generate(userID, req.Email)
 	if err != nil {
 		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 		return
 	}
 
-	//return JSON
+	// return JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(LoginResponse{Token: token})
 }
