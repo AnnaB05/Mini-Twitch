@@ -2,18 +2,20 @@ package api
 
 import (
 	"auth-service/cmd/api/handlers"
+	"auth-service/cmd/api/middleware"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 )
 
+// set up http router with chi
 func NewRouter() http.Handler {
 	r := chi.NewRouter()
 
 	//middleware
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	r.Use(chiMiddleware.Logger)
+	r.Use(chiMiddleware.Recoverer)
 
 	//health check
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +29,12 @@ func NewRouter() http.Handler {
 		r.Post("/refresh", handleRefresh)
 		r.Post("/logout", handleLogout)
 
+	})
+
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.JWT)
+
+		r.Get("/auth/me", handlers.Me) //testing protected route
 	})
 
 	return r

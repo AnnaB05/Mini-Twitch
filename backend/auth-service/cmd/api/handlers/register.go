@@ -10,7 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// user registration handler
 type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
