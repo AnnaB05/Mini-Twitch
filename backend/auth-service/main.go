@@ -6,9 +6,11 @@ import (
 
 	"auth-service/cmd/api"
 	"auth-service/internal/database"
+	"auth-service/internal/redis"
 )
 
 func main() {
+
 	db, err := database.Connect(
 		"localhost",
 		"5432",
@@ -19,6 +21,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Database connection failed:", err)
 	}
+
+	redis.Connect()
 
 	database.Set(db)
 

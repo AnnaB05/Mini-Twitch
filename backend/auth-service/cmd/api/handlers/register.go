@@ -24,7 +24,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	//trim em and pw whitespace
+	//trim whitespace from email/pw
 	req.Email = strings.TrimSpace(req.Email)
 	req.Password = strings.TrimSpace(req.Password)
 
