@@ -30,3 +30,22 @@ func (c *Client) ReadPump() {
 		c.hub.broadcast <- message
 	}
 }
+
+func (c *Client) WritePump() {
+	defer func() {
+		c.conn.Close()
+	}()
+	for {
+		message, ok := <-c.send
+		if !ok {
+			//hub closed the channel/client is disconnected
+			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+			return
+		}
+		//write message to the websocket connection
+		if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
+			return
+		}
+	}
+
+}
